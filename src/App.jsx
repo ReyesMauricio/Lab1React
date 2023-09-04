@@ -1,5 +1,6 @@
 
-import Controlado from "./components/Controlado";
+import Controlado from "./components/controlado";
+import Home from "./components/home";
 import Header from "./components/Header";
 
 const App = () => {
@@ -20,6 +21,8 @@ const App = () => {
       <hr />
       <center>
         <Controlado/>
+        <br />
+        <Home/>
       </center>
     </div>
   );

@@ -1,45 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import axios from 'axios'
 
 const Controlado = () => {
 
+    // eslint-disable-next-line no-unused-vars
     const [lista, setLista] = useState([]);
     const [todoNombre, setTodoNombre] = useState("");
     const [todoDescripcion, setTodoDescripcion] = useState("");
-    const [todoEstado, setTodoEstado] = useState("");
 
     //Nuevo ToDo
     const handleAgregarNuevaTarea = () => {
-        let nuevaTarea= {
-            nombre: todoNombre,
-            descripcion: todoDescripcion,
-            estado: todoEstado,
-        };
-
-
-        let actualizarToDo = [...lista];
-        actualizarToDo.push(nuevaTarea);
-        setLista(actualizarToDo);
-        localStorage.setItem('ToDo', JSON.stringify(actualizarToDo));
-        setTodoNombre('');
-        setTodoDescripcion('');
-        setTodoEstado('');
+        axios.post('http://localhost:3001/add', {todoNombre: todoNombre, todoDescripcion: todoDescripcion})
+        .then(result => console.log(result), location.reload())
+        .catch(err => console.log(err))
     }
-
-    //Guardar ToDo List
-    useEffect(() => {
-        let savedTodos = JSON.parse(localStorage.getItem('ToDo'));
-        if (savedTodos) {
-            setLista(savedTodos);
-        }
-    }, []);
-
-    //Eliminar el item
-    const EliminarToDo = index => {
-        let eliminar = [...lista];
-        eliminar.splice(index);
-        localStorage.setItem('ToDo', JSON.stringify(eliminar));
-        setLista(eliminar);
-    };
     
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -54,7 +28,7 @@ const Controlado = () => {
                 onSubmit={handleSubmit}
             >
                 <input
-                    className="form-control mb-2"
+                    className="form-control mb-3"
                     type="text"
                     placeholder="Ingrese un TODO"
                     name="todoNombre"
@@ -64,23 +38,12 @@ const Controlado = () => {
                 <textarea
                     className="form-control mb-2"
                     type="text"
-                    placeholder="Ingrese un TODO"
+                    placeholder="Descripcion..."
                     name="todoDescripcion"
                     value={todoDescripcion}
                     onChange={e => setTodoDescripcion(e.target.value)}
 
                 />
-                <select
-                    className="form-select mb-2"
-                    name="todoEstado"
-                    value={todoEstado}
-                    onChange={e => setTodoEstado(e.target.value)}
-                    defaultValue={todoEstado}
-                >   
-                    <option value="0">Seleccione...</option>
-                    <option value="pendiente">Pendiente</option>
-                    <option value="completado">Completado</option>
-                </select>
                 <button
                     className="btn btn-info"
                     type="submit"
@@ -89,30 +52,6 @@ const Controlado = () => {
                 </button>
             </form>
             <hr />
-            <div className="todo-list col-sm-6">
-                <ul className="list-group" >
-                {lista.map((item, index) => (
-                    <div className="todo-list-item" key={index}>
-                        <li className="list-group-item list-group-item-dark">{item.nombre}</li>
-                        <li className="list-group-item list-group-item-dark">{item.descripcion}</li>
-                        <li className="list-group-item list-group-item-dark">{item.estado}</li>
-                        <div>
-                            <br />
-                            <button
-                                className="btn btn-danger"
-                                type="button"
-                                onClick={() => EliminarToDo(index)}
-                            >
-                                Eliminar
-                            </button>
-                            <br />
-                        </div>
-                        <br />
-                    </div>
-                    ))}
-                    <hr />
-                </ul>
-            </div>
         </div>
     );
 };
